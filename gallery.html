@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      margin-top: 30px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .card-title {
+      margin-top: 10px;
+    }
+  </style>
+  <title>File Explorer</title>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center my-4">Gallery</h1>
+    <input type="file" id="fileInput" multiple>
+    <div id="fileList" class="row"></div>
+  </div>
+
+  <div id="imageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImage" src="" alt="Image Preview" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const fileInput = document.getElementById('fileInput');
+      const uploadButton = document.getElementById('uploadButton');
+      const fileListContainer = document.getElementById('fileList');
+      const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+      const modalImage = document.getElementById('modalImage');
+
+      fileInput.addEventListener('change', handleFileSelect);
+      uploadButton.addEventListener('click', handleUpload);
+
+      function handleFileSelect(event) {
+        const files = event.target.files;
+
+        for (const file of files) {
+          displayFile(file);
+        }
+      }
+
+      function displayFile(file) {
+        const card = createCard(file);
+
+        fileListContainer.appendChild(card);
+      }
+
+      function createCard(file) {
+        const card = document.createElement('div');
+        card.classList.add('col-md-4', 'card');
+        card.setAttribute('data-toggle', 'modal');
+        card.setAttribute('data-target', '#imageModal');
+
+        const cardInner = document.createElement('div');
+        cardInner.classList.add('card-inner');
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        const title = document.createElement('h5');
+        title.classList.add('card-title');
+        title.textContent = file.name;
+
+        const fileSize = document.createElement('p');
+        fileSize.textContent = formatBytes(file.size);
+
+        cardBody.appendChild(title);
+        cardBody.appendChild(fileSize);
+        cardInner.appendChild(cardBody);
+        card.appendChild(cardInner);
+
+        card.addEventListener('click', function () {
+          modalImage.src = URL.createObjectURL(file);
+        });
+
+        return card;
+      }
+
+      function formatBytes(bytes, decimals = 2) {
+        if (bytes === 0) return '0 Bytes';
+
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+      }
+
+      function handleUpload() {
+        // Implement file upload logic here
+        alert('Files uploaded successfully!');
+      }
+    });
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
